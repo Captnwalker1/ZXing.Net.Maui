@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>net6.0-android;net6.0-maccatalyst;net6.0-ios;net7.0-android;net7.0-maccatalyst;net7.0-ios</TargetFrameworks>
-		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net6.0-windows10.0.19041;net7.0-windows10.0.19041</TargetFrameworks>
+		<TargetFrameworks>net7.0-android;net7.0-maccatalyst;net7.0-ios;net8.0-android;net8.0-maccatalyst;net8.0-ios</TargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.19041;net8.0-windows10.0.19041</TargetFrameworks>
 		<PackageId>ZXing.Net.Maui</PackageId>
+		<PackageVersion>1.0.2</PackageVersion>
 		<Title>ZXing.Net.MAUI Barcode Scanner for .NET MAUI</Title>
 		<Authors>Redth</Authors>
 		<UseMaui>True</UseMaui>
@@ -24,16 +25,19 @@
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<PublishReadyToRun>false</PublishReadyToRun>
 	</PropertyGroup>
-	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-android' OR '$(TargetFramework)' == 'net6.0-android'">
-		<PackageReference Include="Xamarin.AndroidX.Camera.Camera2" Version="1.1.0" />
-		<PackageReference Include="Xamarin.AndroidX.Camera.Lifecycle" Version="1.1.0" />
-		<PackageReference Include="Xamarin.AndroidX.Camera.View" Version="1.1.0" />
+	<ItemGroup Condition="$(TargetFramework.Contains('-android'))">
+		<PackageReference Include="Xamarin.AndroidX.Camera.Camera2" Version="1.2.0" />
+		<PackageReference Include="Xamarin.AndroidX.Camera.Lifecycle" Version="1.2.0" />
+		<PackageReference Include="Xamarin.AndroidX.Camera.View" Version="1.2.0" />
 
 		<AndroidManifest Include="Platforms/Android/AndroidManifest.xml" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="ZXing.Net" Version="0.16.8" />
 		<PackageReference Include="GitInfo" Version="2.2.0" PrivateAssets="all" />
+	</ItemGroup>
+	<ItemGroup Condition="$(TargetFramework.Contains('net8'))">
+		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>
