@@ -13,6 +13,11 @@ global using NativePlatformCameraPreviewView = global::Microsoft.UI.Xaml.Framewo
 global using NativePlatformView = global::Microsoft.UI.Xaml.FrameworkElement;
 global using NativePlatformImageView = global::Microsoft.UI.Xaml.Controls.Image;
 global using NativePlatformImage = global::Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap;
+#else
+global using NativePlatformCameraPreviewView = ZXing.Net.Maui.NativePlatformCameraPreviewView;
+global using NativePlatformView = ZXing.Net.Maui.NativePlatformView;
+global using NativePlatformImageView = ZXing.Net.Maui.NativePlatformImageView;
+global using NativePlatformImage = ZXing.Net.Maui.NativePlatformImage;
 #endif
 
 using Microsoft.Extensions.DependencyInjection;
@@ -23,11 +28,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ZXing.Net.Maui.Controls;
-
 namespace ZXing.Net.Maui
 {
-	public static class CameraViewExtensions
+	public static class MauiHostBuilderExtensions
 	{
 		public static MauiAppBuilder UseBarcodeReader(this MauiAppBuilder builder)
 		{

@@ -25,8 +25,6 @@ namespace ZXing.Net.Maui
 		
 		CameraManager cameraManager;
 
-		public event EventHandler<CameraFrameBufferEventArgs> FrameReady;
-
 		public CameraViewHandler() : base(CameraViewMapper)
 		{
 		}
@@ -46,21 +44,28 @@ namespace ZXing.Net.Maui
 		protected override async void ConnectHandler(NativePlatformCameraPreviewView nativeView)
 		{
 			base.ConnectHandler(nativeView);
+   
+			if (cameraManager != null)
+			{
+				if (await cameraManager.CheckPermissions())
+					cameraManager.Connect();
 
-			if (await cameraManager.CheckPermissions())
-				cameraManager.Connect();
-
-			cameraManager.FrameReady += CameraManager_FrameReady;
+				cameraManager.FrameReady += CameraManager_FrameReady;
+			}
 		}
 
 		void CameraManager_FrameReady(object sender, CameraFrameBufferEventArgs e)
-			=> FrameReady?.Invoke(this, e);
+			=> VirtualView?.FrameReady(e);
 
-		protected override void DisconnectHandler(NativePlatformCameraPreviewView nativeView)
+        protected override void DisconnectHandler(NativePlatformCameraPreviewView nativeView)
 		{
-			cameraManager.FrameReady -= CameraManager_FrameReady;
+			if (cameraManager != null)
+			{
+				cameraManager.FrameReady -= CameraManager_FrameReady;
 
-			cameraManager.Disconnect();
+			  cameraManager.Disconnect();
+			  cameraManager.Dispose();
+			}
 
 			base.DisconnectHandler(nativeView);
 		}

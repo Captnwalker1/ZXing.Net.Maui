@@ -16,10 +16,10 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-    - name: Setup .NET 6.0
-      uses: actions/setup-dotnet@v1
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: '7.0.x'
     - name: Setup NuGet 5.x
       uses: nuget/setup-nuget@v1
       with:
@@ -45,6 +45,8 @@ jobs:
         
         New-Item -ItemType Directory -Force -Path .\artifacts
         dotnet pack --output ./artifacts --configuration Release -p:PackageVersion=$VERSION ./ZXing.Net.MAUI/ZXing.Net.MAUI.csproj
+        dotnet pack --output ./artifacts --configuration Release -p:PackageVersion=$VERSION ./ZXing.Net.MAUI.Controls/ZXing.Net.MAUI.Controls.csproj
+        dotnet pack --output ./artifacts --configuration Release -p:PackageVersion=$VERSION ./ZXing.Net.MAUI.Comet/ZXing.Net.MAUI.Comet.csproj
         $pfxPath = Join-Path -Path $pwd -ChildPath "codesigncert.pfx"
         [IO.File]::WriteAllBytes("$pfxPath", [System.Convert]::FromBase64String($env:CODESIGN_PFX))
         nuget sign .\artifacts\*.nupkg -CertificatePath $pfxPath -Timestamper http://timestamp.entrust.net/TSS/RFC3161sha2TS
@@ -66,9 +68,9 @@ jobs:
         with:
           name: NuGet
       - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '6.0.x'
+          dotnet-version: '7.0.x'
       - name: Push NuGet
         run: |
           dotnet nuget push NuGet\*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_ORG_API_KEY }}

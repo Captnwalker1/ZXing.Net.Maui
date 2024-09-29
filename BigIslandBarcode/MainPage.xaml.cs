@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.Maui.Controls;
 using ZXing.Net.Maui;
+using ZXing.Net.Maui.Controls;
 
 namespace BigIslandBarcode
 {
@@ -24,13 +25,20 @@ namespace BigIslandBarcode
 			foreach (var barcode in e.Results)
 				Console.WriteLine($"Barcodes: {barcode.Format} -> {barcode.Value}");
 
-			Device.InvokeOnMainThreadAsync(() =>
+			var first = e.Results?.FirstOrDefault();
+			if (first is not null)
 			{
-				var r = e.Results.First();
-
-				barcodeGenerator.Value = r.Value;
-				barcodeGenerator.Format = r.Format;
-			});
+				Dispatcher.Dispatch(() =>
+				{
+                    // Update BarcodeGeneratorView
+					barcodeGenerator.ClearValue(BarcodeGeneratorView.ValueProperty);
+					barcodeGenerator.Format = first.Format;
+					barcodeGenerator.Value = first.Value;
+                    
+                    // Update Label
+                    ResultLabel.Text = $"Barcodes: {first.Format} -> {first.Value}";
+				});
+			}
 		}
 
 		void SwitchCameraButton_Clicked(object sender, EventArgs e)

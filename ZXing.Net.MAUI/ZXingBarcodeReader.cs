@@ -18,12 +18,13 @@ namespace ZXing.Net.Maui.Readers
 			get => options ??= new BarcodeReaderOptions();
 			set
 			{
-				options = value;
+				options = value ?? new BarcodeReaderOptions();
 				zxingReader.Options.PossibleFormats = options.Formats.ToZXingList();
 				zxingReader.Options.TryHarder = options.TryHarder;
 				zxingReader.AutoRotate = options.AutoRotate;
 				zxingReader.Options.TryInverted = options.TryInverted;
-			}
+				zxingReader.Options.UseCode39ExtendedMode = options.UseCode39ExtendedMode;
+            }
 		}
 
 		public BarcodeResult[] Decode(PixelBufferHolder image)
@@ -37,6 +38,8 @@ namespace ZXing.Net.Maui.Readers
 			ls = new ByteBufferYUVLuminanceSource(image.Data, w, h, 0, 0, w, h);
 #elif MACCATALYST || IOS
 			ls = new CVPixelBufferBGRA32LuminanceSource(image.Data, w, h);
+#elif WINDOWS
+			ls = new SoftwareBitmapLuminanceSource(image.Data);
 #endif
 
 			if (Options.Multiple)
